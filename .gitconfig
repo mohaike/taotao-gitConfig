@@ -24,16 +24,15 @@
     ds = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-status\"
     dsn = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-only\"
     ############################################################
-    # 在【~/.bashrc】或者【~/.zshrc】(如果用zsh的话)里面添加别名
+    # git 设定的别名
+    # alias gdks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""
+    # alias gdcs=". ~/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
+    # alias gdas=". ~/git-dfun \"git difftool -y -t araxis --no-symlinks\""
+    # alias gdts=". ~/git-dfun \"git difftool\""
 
-    # alias dks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""
-    # alias dcs=". ~/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
-    # alias das=". ~/git-dfun \"git difftool -y -t araxis --no-symlinks\""
-    # alias dts=". ~/git-dfun \"git difftool\""
-    # alias ds=". ~/git-dfun \"git diff --name-status\""
-    # alias dsn=". ~/git-dfun \"git diff --name-only\""
+    # alias gds=". ~/git-dfun \"git diff --name-status\""
+    # alias gdsn=". ~/git-dfun \"git diff --name-only\""
 
-    # 之后便可以直接调用脚本相关的git配置，效率会比直接写在这里面高得多
     ############################################################
 
 [user]

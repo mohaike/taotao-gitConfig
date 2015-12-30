@@ -15,54 +15,27 @@
     da = difftool -y -t araxis --no-symlinks
     ma = mergetool -y -t araxis
 
-	# dks = "!sh -c 'if [ -z $1 ]; then SHA1=HEAD^; SHA2=HEAD; else if [ -z $2 ]; then SHA1=$1^; SHA2=$1; else SHA1=$1; SHA2=$2; fi; fi; git difftool -y -t Kaleidoscope $SHA1 $SHA2;' -"
-	# dcs = "!sh -c 'if [ -z $1 ]; then SHA1=HEAD^; SHA2=HEAD; else if [ -z $2 ]; then SHA1=$1^; SHA2=$1; else SHA1=$1; SHA2=$2; fi; fi; git difftool -y -t bcomp --no-symlinks $SHA1 $SHA2;' -"
-	# das = "!sh -c 'if [ -z $1 ]; then SHA1=HEAD^; SHA2=HEAD; else if [ -z $2 ]; then SHA1=$1^; SHA2=$1; else SHA1=$1; SHA2=$2; fi; fi; git difftool -y -t araxis --no-symlinks $SHA1 $SHA2;' -"
-	# dts = "!sh -c 'if [ -z $1 ]; then SHA1=HEAD^; SHA2=HEAD; else if [ -z $2 ]; then SHA1=$1^; SHA2=$1; else SHA1=$1; SHA2=$2; fi; fi; git difftool $SHA1 $SHA2;' -"
-    # 配合脚本【~/git-dfun】一起使用
-    # dks = "!sh -c '. ~/git-dfun' -" \"git difftool -y -t Kaleidoscope\"
-    # dcs = "!sh -c '. ~/git-dfun' -" \"git difftool -y -t bcomp --no-symlinks\"
-    # das = "!sh -c '. ~/git-dfun' -" \"git difftool -y -t araxis --no-symlinks\"
-    # dts = "!sh -c '. ~/git-dfun' -" \"git difftool\"
 
-    # ds = "!sh -c '. ~/git-dfun' -" \"git diff --name-status\"
-    # dsn = "!sh -c '. ~/git-dfun' -" \"git diff --name-only\"
+    dks = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t Kaleidoscope\"
+    dcs = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t bcomp --no-symlinks\"
+    das = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t araxis --no-symlinks\"
+    dts = "!sh -c '. ~/git-in-dfun' -" \"git difftool\"
 
-    dks = "!sh -c '. ~/git-sfun' -" \"git difftool -y -t Kaleidoscope\"
-    dcs = "!sh -c '. ~/git-sfun' -" \"git difftool -y -t bcomp --no-symlinks\"
-    das = "!sh -c '. ~/git-sfun' -" \"git difftool -y -t araxis --no-symlinks\"
-    dts = "!sh -c '. ~/git-sfun' -" \"git difftool\"
+    ds = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-status\"
+    dsn = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-only\"
+    ############################################################
+    # 在【~/.bashrc】或者【~/.zshrc】(如果用zsh的话)里面添加别名
 
-    ds = "!sh -c '. ~/git-dfun' -" \"git diff --name-status\"
-    dsn = "!sh -c '. ~/git-dfun' -" \"git diff --name-only\"
+    # alias dks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""
+    # alias dcs=". ~/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
+    # alias das=". ~/git-dfun \"git difftool -y -t araxis --no-symlinks\""
+    # alias dts=". ~/git-dfun \"git difftool\""
+    # alias ds=". ~/git-dfun \"git diff --name-status\""
+    # alias dsn=". ~/git-dfun \"git diff --name-only\""
 
-    # ds = "!sh -c '\
-    #         if [ -z $1 ]; then \
-    #             SHA1=HEAD^; \
-    #             SHA2=HEAD; \
-    #         else \
-    #             if [ -z $2 ]; then \
-    #                 SHA1=$1^; \
-    #                 SHA2=$1; \
-    #             else \
-    #                 SHA1=$1; \
-    #                 SHA2=$2; \
-    #             fi; \
-    #         fi; \
-    #         fcmd=\"git diff --name-status \"\"$SHA1\"\" $SHA2\"; \
-    #         echo "$fcmd"; \
-    #         $fcmd; \
-    #         ' -"
+    # 之后便可以直接调用脚本相关的git配置，效率会比直接写在这里面高得多
+    ############################################################
 
-    # # 额，如果嫌一行很难看的话，可以用转义换行也就是换行前面加一个【\】可以参照cocos2dx宏的换行写法
-    # # 在配置文件里面可以直接运行脚本命令
-    # # 最后面的【-"】代表可以跟着参数，如果没有的话，有可能会接收不到参数，
-    # # 最后面的helloGit就是这么设定的......
-    # helloWorld = "!sh -c 'echo \"hello world\";' -"
-    # say = "!f() { msg=${1-Hello World}; echo $msg;  }; f"
-    # # 还可以按照绝对路径运行脚本......
-    # # 如果最后的不是【-"】直接是【"】的话，那样子会接收不到传进来的参数......
-    # helloGit = "!sh -c '. ~/git-dst' -"
 [user]
 	name = 黄长涛
 	email = huangchangtao@yodo1.com

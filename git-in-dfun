@@ -1,0 +1,49 @@
+#!/bin/sh
+if [ -z "$1" ]; then
+    MAINCMD="git diff --name-status";
+else
+    MAINCMD="$1";
+fi
+
+if [ -z $2 ]; then
+    SHA1=HEAD^;
+    SHA2=HEAD;
+else
+    if [ -z "$3" ]; then
+        SHA1=$2^;
+        SHA2=$2;
+    else
+        if [ "$3" == "." ]; then
+            SHA1=$2^;
+            SHA2=$2;
+        else
+            SHA1=$2;
+            SHA2=$3;
+        fi
+    fi;
+fi;
+
+# for p in "$@"; do
+#     echo ${#p};
+# done
+# 保存第四位开始的参数
+LESTP=${@:4:$#};
+# echo "1q84 ll:$LESTP"
+
+fcmd="$MAINCMD"" $SHA1"" $SHA2"" $LESTP";
+echo "$fcmd";
+
+if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff --name-only" ]; then
+    normalfcmd="git diff --name-status"" $SHA1"" $SHA2"" $LESTP";
+
+    exec 3>&1
+    t_err=$((normalfcmd) 2>&1 >/dev/null)
+    t_std=$({ taotaotmp=$($normalfcmd 2>&1 1>&3-); } 3>&1)
+    t_ret=$?
+    exec 3>&-
+
+    echo "$t_std"
+     
+fi
+
+$fcmd;

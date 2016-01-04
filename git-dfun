@@ -1,0 +1,133 @@
+#!/bin/sh
+
+SHOW_PATH=""
+
+function fGitOk()
+{
+    echo "::::::::::::::::::::1Q84-FGITOK::::::::::::::::::::"
+    # unset t_std t_err t_ret
+    # eval "$( ($1) 2> >(t_err=$(cat); declare -p t_err) > >(t_std=$(cat); declare -p t_std); t_ret=$?; declare -p t_ret )"
+
+    # 以下的也可以，不过感觉很罗嗦
+    exec 3>&1
+    t_err=$($1 2>&1 >/dev/null)
+    t_std=$({ taotaotmp=$($1 2>&1 1>&3-) ;} 3>&1)
+    t_ret=$?
+    exec 3>&-
+
+    if [ "$2" == "l" ]; then
+        echo "******************************"
+        echo "fGitOk agr:\t「$1」"
+
+        if [ "$3" == "std" ]; then
+            echo "------------------------------"
+            echo "1q84 T_STD MESSAGE IS \"${t_std}\"."
+        fi
+
+        echo "------------------------------"
+        echo "1q85 T_ERR MESSAGE IS \"${t_err}\"."
+        echo "------------------------------"
+        echo "1q86 T_RET MESSAGE IS \"${t_ret}\"."
+
+    fi
+
+    errorQueryMsg=""
+    if [ -z $4 ]; then
+        errorQueryMsg="fatal:"
+    else
+        errorQueryMsg="$4"
+    fi
+
+    INDEX_ERR=""
+    echo "$t_err" | grep -q "$errorQueryMsg" && INDEX_ERR=1 || INDEX_ERR=0
+
+    if [ "$3" == "l" ]; then
+        echo "------------------------------"
+        echo "INDEX_ERR = $INDEX_ERR"
+        echo "=============================="
+    fi
+
+    # 这里就是说成功了(也即结果值【$t_ret】为0)，并且错误信息里面找不到字段【$errorQueryMsg】，那就意味着我们成功了
+    # 按照他们的惯例，也返回【0】表示成功。(话说0是假的意思吧 - -b 额，好吧，惯例...)
+    # 其实似乎有些多余，如果【$t_ret】为0，那应该就没有错误信息了吧？那当然没什么可找的
+    # 算是做个保险？
+    if [ $t_ret -eq 0 ] && [ $INDEX_ERR == 0 ]; then
+        return 0;
+    else
+        return 1;
+    fi
+}
+
+# if [[ -z $1 ]]; then
+if [ -z "$1" ]; then
+    MAINCMD="git diff --name-status";
+else
+    MAINCMD="$1";
+fi
+
+if [ -z "$2" ]; then
+    SHA1=HEAD^;
+    SHA2=HEAD;
+else
+    ############################################################
+    # 这里主要讨论的是在第二个参数存在的情况下，第二参数是否为有效SHA值
+    CMD_ARG_2_SHA="git show $2..head"
+    fGitOk "$CMD_ARG_2_SHA" "l"
+    RESULT_ARG_2_SHA=$?
+    ############################################################
+
+    if [ $RESULT_ARG_2_SHA -eq 0 ]; then
+        # 在这里的话第二个参数是可以用的SHA值
+        if [ -z $3 ]; then
+            SHA1=$2^;
+            SHA2=$2;
+        else
+            ############################################################
+            # 这里主要讨论的是在第三个参数存在的情况下，第三参数是否为有效SHA值
+            CMD_ARG_3_SHA="git show $3..head"
+            fGitOk "$CMD_ARG_3_SHA"
+            RESULT_ARG_3_SHA=$?
+            ############################################################
+            if [ $RESULT_ARG_3_SHA -eq 0 ]; then
+                SHA1=$2;
+                SHA2=$3;
+            else
+                # 如果是错误结果的话，或者出现或者是预计的错误结果的话
+                # 也就是说第三参数是无效的SHA参数，那么就有可能是表示路径
+                SHA1=$2^;
+                SHA2=$2;
+
+                ############################################################
+                # 这里讨论的是第三个参数是否是我们需要有效的路径
+                # 既然上面的是无效的
+                CMD_ARG_3_PATH="git diff head^ head $3"
+                fGitOk "$CMD_ARG_3_PATH"
+                RESULT_ARG_3_PATH=$?
+                ############################################################
+                if [ $RESULT_ARG_3_PATH -eq 0 ]; then
+                    SHOW_PATH="$3"
+                else
+                    # 如果是错误结果的话，或者出现或者是预计的错误结果的话
+                    # 也就是说第三参数是无效的路径
+                    SHOW_PATH=""
+                fi
+                ############################################################
+            fi
+        fi
+    else
+        # 如果是错误结果的话，或者出现或者是预计的错误结果的话
+        # 也就是说第二参数是无效的SHA参数
+        SHA1=HEAD^;
+        SHA2=HEAD;
+    fi
+    ############################################################
+
+fi
+
+fcmd="$MAINCMD ""$SHA1"" $SHA2"" $SHOW_PATH";
+# fcmd="echo \"hello\""
+# echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+echo "$fcmd";
+# $fcmd
+
+# echo "hello"

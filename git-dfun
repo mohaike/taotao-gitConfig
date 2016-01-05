@@ -4,7 +4,7 @@ SHOW_PATH=""
 
 function fGitOk()
 {
-    echo "::::::::::::::::::::1Q84-FGITOK::::::::::::::::::::"
+    # echo "::::::::::::::::::::1Q84-FGITOK::::::::::::::::::::"
     # unset t_std t_err t_ret
     # eval "$( ($1) 2> >(t_err=$(cat); declare -p t_err) > >(t_std=$(cat); declare -p t_std); t_ret=$?; declare -p t_ret )"
 

@@ -1,0 +1,95 @@
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	unstage = reset HEAD
+	last = log -1
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lng = log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    dk = difftool -y -t Kaleidoscope
+    dkh = difftool -y -t Kaleidoscope HEAD
+    mk = mergetool -y -t Kaleidoscope
+    dc = difftool -y -t bcomp --no-symlinks
+    mc = mergetool -y -t bcomp
+    da = difftool -y -t araxis --no-symlinks
+    ma = mergetool -y -t araxis
+
+
+    dks = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t Kaleidoscope\"
+    dcs = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t bcomp --no-symlinks\"
+    das = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t araxis --no-symlinks\"
+    dts = "!sh -c '. ~/git-in-dfun' -" \"git difftool\"
+
+    ds = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-status\"
+    dsn = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-only\"
+    ############################################################
+    # git 设定的别名
+    # alias gdks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""
+    # alias gdcs=". ~/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
+    # alias gdas=". ~/git-dfun \"git difftool -y -t araxis --no-symlinks\""
+    # alias gdts=". ~/git-dfun \"git difftool\""
+
+    # alias gds=". ~/git-dfun \"git diff --name-status\""
+    # alias gdsn=". ~/git-dfun \"git diff --name-only\""
+
+    ############################################################
+
+[user]
+	name = 黄长涛
+	email = huangchangtao@yodo1.com
+[core]
+	editor = emacs
+	excludesfile = /Users/1q84/.gitignore_global
+	quotepath = false
+[push]
+	default = matching
+
+####################################################################################################
+# 我们在这里面前前后后用了四种diff工具，- -我大概是疯了
+# 可以看到工具的配置大同小异，除了 Kaleidoscope 都差不多
+# sourcetree 是 opendiff 这个是系统自带的Merge工具
+# bcomp 是 Beyond Compare 的终端工具，路径下面可见
+# araxis 是 compare 也就是 Araxis Merge 的 compare 快捷方式放到执行路径【/usr/local/bin】底下了
+# Kaleidoscope 是 ksdiff 也就是 Kaleidoscope 的终端工具，感觉这个各种强大
+# 额，话说貌似那个路径可以不写的说直接上名字，因为都放到相关的bin里面了...
+####################################################################################################
+[diff]
+	# tool = sourcetree
+    # tool = bcomp
+    # tool = araxis
+    tool = Kaleidoscope
+[difftool]
+    prompt = false
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[difftool "bcomp"]
+    trustExitCode = true
+    cmd = "/usr/local/bin/bcomp" \"$LOCAL\" \"$REMOTE\"
+[difftool "araxis"]
+    trustExitCode = true
+    cmd = "/usr/local/bin/compare" \"$LOCAL\" \"$REMOTE\"
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+
+####################################################################################################
+[merge]
+	# tool = sourcetree
+    # tool = bcomp
+    # tool = compare
+    tool = Kaleidoscope
+[mergetool]
+    prompt = false
+[mergetool "sourcetree"]
+	trustExitCode = true
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+[mergetool "bcomp"]
+    trustExitCode = true
+    cmd = "/usr/local/bin/bcomp" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[mergetool "araxis"]
+    trustExitCode = true
+    cmd = "/usr/local/bin/compare" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[mergetool "Kaleidoscope"]
+    trustExitCode = true
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot

@@ -32,10 +32,6 @@ LESTP=${@:4:$#};
 
 fcmd="$MAINCMD"" $SHA1"" $SHA2"" $LESTP";
 echo "$fcmd";
-<<<<<<< HEAD
-=======
-$fcmd;
->>>>>>> origin/master
 
 if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff --name-only" ]; then
     normalfcmd="git diff --name-status"" $SHA1"" $SHA2"" $LESTP";
@@ -49,8 +45,5 @@ if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff -
     echo "$t_std"
      
 fi
-<<<<<<< HEAD
 
 $fcmd;
-=======
->>>>>>> origin/master

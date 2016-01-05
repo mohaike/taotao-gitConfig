@@ -47,15 +47,33 @@ function fGitOk()
         echo "=============================="
     fi
 
-    # 这里就是说成功了(也即结果值【$t_ret】为0)，并且错误信息里面找不到字段【$errorQueryMsg】，那就意味着我们成功了
-    # 按照他们的惯例，也返回【0】表示成功。(话说0是假的意思吧 - -b 额，好吧，惯例...)
-    # 其实似乎有些多余，如果【$t_ret】为0，那应该就没有错误信息了吧？那当然没什么可找的
-    # 算是做个保险？
-    if [ $t_ret -eq 0 ] && [ $INDEX_ERR == 0 ]; then
-        return 0;
+    # 当然了, 这里除了用来校验是否为 commit 之外还负责校验合法路径.
+    # 好吧那就涉及到用户的输入了.
+    # 下面用的【^git diff head】表示查询是否以【git diff head】开头
+    INDEX_PATH=""
+    echo "$1" | grep  "^git diff head" && INDEX_PATH="yes" || INDEX_PATH="no"
+    # echo "INDEX_PATH is $INDEX_PATH"
+
+    if [ "$INDEX_PATH" == "yes" ]; then
+        # 这里是校验路径
+        if [ "$t_ret" -eq 0 ] && [ "$INDEX_ERR" == 0 ]; then
+            return 0;
+        else
+            return 1;
+        fi
     else
-        return 1;
+        # 这里的意思是说不是校验路径
+        # 这里就是说成功了(也即结果值【$t_ret】为0)，并且错误信息里面找不到字段【$errorQueryMsg】，那就意味着我们成功了
+        # 按照他们的惯例，也返回【0】表示成功。(话说0是假的意思吧 - -b 额，好吧，惯例...)
+        # 其实似乎有些多余，如果【$t_ret】为0，那应该就没有错误信息了吧？那当然没什么可找的
+        # 最关键一点需要校验输入值为 commit.
+        if [ "$t_ret" -eq 0 ] && [ "$INDEX_ERR" == 0 ] && [ "$t_std" == "commit" ]; then
+            return 0;
+        else
+            return 1;
+        fi
     fi
+
 }
 
 # if [[ -z $1 ]]; then
@@ -66,52 +84,48 @@ else
 fi
 
 if [ -z "$2" ]; then
-    SHA1=HEAD^;
-    SHA2=HEAD;
+    SHA1=" HEAD^";
+    SHA2=" HEAD";
 else
     ############################################################
     # 这里主要讨论的是在第二个参数存在的情况下，第二参数是否为有效SHA值
-    # 这里用一个新的方法来校验合法的 commit 值, 额, 当然只是初级的
-    # 和下面的校验不同的是不能防止别的 git 对象比如 git tree 的 sha 值
-    # 不过这个毕竟是要使用工具, 好吧, 真要各种黑... 那再等等吧...
-    # CMD_ARG_2_SHA="git show $2..head"
-    # 再次声明, 只接受 commit 的 sha 值, 真要拿 tree 或者 blog 的 sha 来我也没办法...
-    CMD_ARG_2_SHA="git cat-file -p $2"
-    fGitOk "$CMD_ARG_2_SHA" "l"
+    # 使用【git cat-file -t】得到值的类型
+    CMD_ARG_2_SHA="git cat-file -t $2"
+    fGitOk "$CMD_ARG_2_SHA"
     RESULT_ARG_2_SHA=$?
     ############################################################
 
     if [ $RESULT_ARG_2_SHA -eq 0 ]; then
         # 在这里的话第二个参数是可以用的SHA值
         if [ -z $3 ]; then
-            SHA1=$2^;
-            SHA2=$2;
+            SHA1=" $2^";
+            SHA2=" $2";
         else
             ############################################################
             # 这里主要讨论的是在第三个参数存在的情况下，第三参数是否为有效SHA值
             # CMD_ARG_3_SHA="git show $3..head"
-            CMD_ARG_3_SHA="git cat-file -p $3"
-            fGitOk "$CMD_ARG_3_SHA"
+            CMD_ARG_3_SHA="git cat-file -t $3"
+            fGitOk "$CMD_ARG_3_SHA" "l" "std"
             RESULT_ARG_3_SHA=$?
             ############################################################
             if [ $RESULT_ARG_3_SHA -eq 0 ]; then
-                SHA1=$2;
-                SHA2=$3;
+                SHA1=" $2";
+                SHA2=" $3";
             else
                 # 如果是错误结果的话，或者出现或者是预计的错误结果的话
                 # 也就是说第三参数是无效的SHA参数，那么就有可能是表示路径
-                SHA1=$2^;
-                SHA2=$2;
+                SHA1=" $2^";
+                SHA2=" $2";
 
                 ############################################################
                 # 这里讨论的是第三个参数是否是我们需要有效的路径
                 # 既然上面的是无效的
-                CMD_ARG_3_PATH="git diff head^ head $3"
-                fGitOk "$CMD_ARG_3_PATH"
+                CMD_ARG_3_PATH="git diff head $3"
+                fGitOk "$CMD_ARG_3_PATH" "l" "std"
                 RESULT_ARG_3_PATH=$?
                 ############################################################
                 if [ $RESULT_ARG_3_PATH -eq 0 ]; then
-                    SHOW_PATH="$3"
+                    SHOW_PATH=" $3"
                 else
                     # 如果是错误结果的话，或者出现或者是预计的错误结果的话
                     # 也就是说第三参数是无效的路径
@@ -123,17 +137,21 @@ else
     else
         # 如果是错误结果的话，或者出现或者是预计的错误结果的话
         # 也就是说第二参数是无效的SHA参数
-        SHA1=HEAD^;
-        SHA2=HEAD;
+        SHA1=" HEAD^";
+        SHA2=" HEAD";
     fi
     ############################################################
 
 fi
 
-fcmd="$MAINCMD ""$SHA1"" $SHA2"" $SHOW_PATH";
-# fcmd="echo \"hello\""
+LASTCMD=""
+# 保存第四位开始的参数
+LESTP=${@:4:$#};
+if [ ! "$LESTP" == "" ]; then
+    LASTCMD=" $LESTP"
+fi
+
+fcmd="$MAINCMD""$SHA1""$SHA2""$SHOW_PATH""$LASTCMD";
 # echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "$fcmd";
-# $fcmd
-
-# echo "hello"
+$fcmd

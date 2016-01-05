@@ -1,13 +1,17 @@
+好吧, 现在这个插件的文件都放置在【~/.git-custom-config】目录
+并且和【zsh】做了适配, 也就是运行不仅仅用【.】改用【sh】
+现在的话, 在 Mac 平台可以运行的很好.
+
 就像配置文件里面提到的
 ############################################################
 # git 设定的别名
-alias gdks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""
-alias gdcs=". ~/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
-alias gdas=". ~/git-dfun \"git difftool -y -t araxis --no-symlinks\""
-alias gdts=". ~/git-dfun \"git difftool\""
+alias gdks="sh ~/.git-custom-config/git-dfun \"git difftool -y -t Kaleidoscope\""
+alias gdcs="sh ~/.git-custom-config/git-dfun \"git difftool -y -t bcomp --no-symlinks\""
+alias gdas="sh ~/.git-custom-config/git-dfun \"git difftool -y -t araxis --no-symlinks\""
+alias gdts="sh ~/.git-custom-config/git-dfun \"git difftool\""
 
-alias gds=". ~/git-dfun \"git diff --name-status\""
-alias gdsn=". ~/git-dfun \"git diff --name-only\""
+alias gds="sh ~/.git-custom-config/git-dfun \"git diff --name-status\""
+alias gdsn="sh ~/.git-custom-config/git-dfun \"git diff --name-only\""
 
 ############################################################
 如果使用系统的别名直接用就可以，比如说

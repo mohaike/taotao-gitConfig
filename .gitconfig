@@ -16,13 +16,13 @@
     ma = mergetool -y -t araxis
 
 
-    dks = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t Kaleidoscope\"
-    dcs = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t bcomp --no-symlinks\"
-    das = "!sh -c '. ~/git-in-dfun' -" \"git difftool -y -t araxis --no-symlinks\"
-    dts = "!sh -c '. ~/git-in-dfun' -" \"git difftool\"
+    dks = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git difftool -y -t Kaleidoscope\"
+    dcs = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git difftool -y -t bcomp --no-symlinks\"
+    das = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git difftool -y -t araxis --no-symlinks\"
+    dts = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git difftool\"
 
-    ds = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-status\"
-    dsn = "!sh -c '. ~/git-in-dfun' -" \"git diff --name-only\"
+    ds = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git diff --name-status\"
+    dsn = "!sh -c '. ~/.git-custom-config/git-in-dfun' -" \"git diff --name-only\"
     ############################################################
     # git 设定的别名
     # alias gdks=". ~/git-dfun \"git difftool -y -t Kaleidoscope\""

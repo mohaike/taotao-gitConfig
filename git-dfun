@@ -138,6 +138,20 @@ else
     else
         # 如果是错误结果的话，或者出现或者是预计的错误结果的话
         # 也就是说第二参数是无效的SHA参数
+        # 这个时候我们可以试一下它是不是某个有效的路径
+        CMD_ARG_2_PATH="git diff head $2"
+        fGitOk "$CMD_ARG_2_PATH"
+        RESULT_ARG_2_PATH=$?
+        if [ $RESULT_ARG_2_PATH -eq 0 ]; then
+            # 第二个参数是有效路径
+            SHOW_PATH=" $2"
+        else
+            # 如果是错误结果的话，或者出现或者是预计的错误结果的话
+            # 也就是说第二参数是未知参数, 那就直接忽略吧
+            SHOW_PATH=""
+        fi
+
+        # 不管怎么说, 第二参数不是有效 COMMIT SHA 值的话, 那么一定有以下设定
         SHA1=" HEAD^";
         SHA2=" HEAD";
     fi

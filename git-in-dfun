@@ -31,8 +31,9 @@ LESTP=${@:4:$#};
 # echo "1q84 ll:$LESTP"
 
 fcmd="$MAINCMD"" $SHA1"" $SHA2"" $LESTP";
+echo "============================================================"
 echo "$fcmd";
-
+echo "------------------------------------------------------------"
 if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff --name-only" ]; then
     normalfcmd="git diff --name-status"" $SHA1"" $SHA2"" $LESTP";
 
@@ -45,5 +46,6 @@ if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff -
     echo "$t_std"
      
 fi
+echo "============================================================"
 
 $fcmd;

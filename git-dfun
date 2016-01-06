@@ -50,8 +50,9 @@ function fGitOk()
     # 当然了, 这里除了用来校验是否为 commit 之外还负责校验合法路径.
     # 好吧那就涉及到用户的输入了.
     # 下面用的【^git diff head】表示查询是否以【git diff head】开头
+    # grep -q 表示静默输出, 如果搜索到结果, 不会输出
     INDEX_PATH=""
-    echo "$1" | grep  "^git diff head" && INDEX_PATH="yes" || INDEX_PATH="no"
+    echo "$1" | grep -q "^git diff head" && INDEX_PATH="yes" || INDEX_PATH="no"
     # echo "INDEX_PATH is $INDEX_PATH"
 
     if [ "$INDEX_PATH" == "yes" ]; then
@@ -105,7 +106,7 @@ else
             # 这里主要讨论的是在第三个参数存在的情况下，第三参数是否为有效SHA值
             # CMD_ARG_3_SHA="git show $3..head"
             CMD_ARG_3_SHA="git cat-file -t $3"
-            fGitOk "$CMD_ARG_3_SHA" "l" "std"
+            fGitOk "$CMD_ARG_3_SHA" # "l" "std"
             RESULT_ARG_3_SHA=$?
             ############################################################
             if [ $RESULT_ARG_3_SHA -eq 0 ]; then
@@ -121,7 +122,7 @@ else
                 # 这里讨论的是第三个参数是否是我们需要有效的路径
                 # 既然上面的是无效的
                 CMD_ARG_3_PATH="git diff head $3"
-                fGitOk "$CMD_ARG_3_PATH" "l" "std"
+                fGitOk "$CMD_ARG_3_PATH" # "l" "std"
                 RESULT_ARG_3_PATH=$?
                 ############################################################
                 if [ $RESULT_ARG_3_PATH -eq 0 ]; then
@@ -153,5 +154,22 @@ fi
 
 fcmd="$MAINCMD""$SHA1""$SHA2""$SHOW_PATH""$LASTCMD";
 # echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+echo "============================================================"
 echo "$fcmd";
+echo "------------------------------------------------------------"
+if [ ! "$MAINCMD" == "git diff --name-status" ] && [ ! "$MAINCMD" == "git diff --name-only" ]; then
+    normalfcmd="git diff --name-status""$SHA1""$SHA2""$SHOW_PATH""$LASTCMD";
+
+    # echo "$normalfcmd"
+
+    exec 3>&1
+    t_err=$((normalfcmd) 2>&1 >/dev/null)
+    t_std=$({ taotaotmp=$($normalfcmd 2>&1 1>&3-); } 3>&1)
+    t_ret=$?
+    exec 3>&-
+
+    echo "$t_std"
+    echo "============================================================"
+fi
+
 $fcmd

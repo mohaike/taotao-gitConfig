@@ -1,8 +1,18 @@
 #!/bin/sh
 # 感觉棒棒哒~ 【/Users/1q84/Desktop/git-log】是 log 保存文件
 # 好吧, 可以用【git lg > /Users/1q84/Desktop/git-log】保存文件
-# 额, 这个是用来另外保存出来的 git 美化后的 log 的颜色码
+# 当然需要在有 git 的目录下面运行这个脚本
+# 如果没有给出输出目录的话
+if [ -n "$1" ]; then
+    gitLog=$1
+else
+    # 似乎不支持 "~/Desktop"
+    gitLog="$HOME""/Desktop/git-log"
+fi
 
+git lg > "$gitLog";
+
+# 额, 这个是用来另外保存出来的 git 美化后的 log 的颜色码
 sedCmd="s/\[31m//g;
         s/\[32m//g;
         s/\[33m//g;
@@ -16,4 +26,4 @@ sedCmd="s/\[31m//g;
         s/\[1\;34m//g;
         s/\[1\;35m//g;
         s/\[1\;36m//g"
-gsed -i "$sedCmd" /Users/1q84/Desktop/git-log;
+gsed -i "$sedCmd" "$gitLog";

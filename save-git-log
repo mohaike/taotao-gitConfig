@@ -10,6 +10,13 @@ else
     gitLog="$HOME""/Desktop/git-log"
 fi
 
+if [ -n "$2" ]; then
+    logCmd=$2
+else
+    # 似乎不支持 "~/Desktop"
+    logCmd="git lg"
+fi
+
 git lg > "$gitLog";
 
 # 额, 这个是用来另外保存出来的 git 美化后的 log 的颜色码

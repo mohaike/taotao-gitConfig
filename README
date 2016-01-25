@@ -2,7 +2,6 @@
 并且和【zsh】做了适配, 也就是运行不仅仅用【.】改用【sh】
 现在的话, 在 Mac 平台可以运行的很好.
 
-就像配置文件里面提到的
 ############################################################
 # git 设定的别名
 alias gdks="sh ~/.git-custom-config/git-dfun \"git difftool -y -t Kaleidoscope\""

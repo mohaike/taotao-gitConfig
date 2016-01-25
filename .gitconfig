@@ -93,3 +93,6 @@
 [mergetool "Kaleidoscope"]
     trustExitCode = true
     cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+
+[color]
+    ui = always
